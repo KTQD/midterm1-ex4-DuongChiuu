@@ -1,35 +1,38 @@
-public class Main {
+import java.lang.Thread;
+
+public class tong {
+    static int sum = 0;
+    static int max = Integer.MIN_VALUE;
     public static void main(String[] args) {
         int[] numbers = {1, 3, 5, 6, 2, 7, 8, 0, 4, 3, 9, 2, 8, 1, 0, 5, 7, 4, 6, 9, 3, 2, 1, 8, 4, 0, 6, 7, 9, 5, 3, 2, 1, 0, 8, 4, 6, 7, 9, 5, 3, 2, 1, 0, 8, 4, 6, 7, 9, 5, 3, 2, 1, 0, 8, 4, 6, 7, 9, 5, 3, 2, 1, 0, 8, 4, 6, 7, 9, 5, 3, 2, 1, 0};
 
-        // Tạo luồng 1 để tính tổng
-        Thread sumThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int sum = 0;
-                for (int num : numbers) {
-                    sum += num;
-                }
-                System.out.println("Tổng của các phần tử trong mảng là: " + sum);
+        int m = numbers.length;
+
+        Thread thread1 = new Thread(() -> {
+            for(int i = 0; i < m; i++) {
+                sum += numbers[i];
             }
         });
 
-        // Tạo luồng 2 để tìm phần tử lớn nhất
-        Thread maxThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int max = numbers[0];
-                for (int i = 1; i < numbers.length; i++) {
-                    if (numbers[i] > max) {
-                        max = numbers[i];
-                    }
+        Thread thread2 = new Thread(() -> {
+            for (int i = 0; i < m; i++) {
+                if (numbers[i] > max) {
+                    max = numbers[i];
                 }
-                System.out.println("Phần tử lớn nhất trong mảng là: " + max);
             }
         });
 
-        // Bắt đầu chạy hai luồng
-        sumThread.start();
-        maxThread.start();
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        System.out.printf("Phần tử lớn nhất trong mảng là: %d\n", max);
+        System.out.printf("Tổng của các phần tử trong mảng là: %d", sum);
+
     }
 }
